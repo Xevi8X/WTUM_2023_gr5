@@ -18,6 +18,7 @@ Sklasyfikowanie wyodrębnionych obrazów twarzy jako jedną z podstawowych emocj
 ### Datasety:
 #### Wykrywanie twarzy:
 https://www.kaggle.com/datasets/dataturks/face-detection-in-images
+https://drive.google.com/drive/folders/0B7EVK8r0v71pWEZsZE9oNnFzTm8?resourcekey=0-5BR16BdXnb8hVj6CNHKzLg
 
 #### Emocje:
 https://www.kaggle.com/datasets/msambare/fer2013
