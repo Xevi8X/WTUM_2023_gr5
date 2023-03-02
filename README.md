@@ -3,7 +3,17 @@
 ## Wstępny pomysł:
 
 Celem projektu jest opracowanie aplikacji do wykrywania twarzy na zdjęciach i określanie emocji rozpoznanych osób.
-Dwie połączone sieci: pierwsza wykrywa twarze i wyodrębnia je. Druga klasyfikuje obrazy twarzy według emocji, wieku, płci.
+Projekt zakłada rozwiązanie dwóch podproblemów tj. wykrycia twarzy na zdjęciach i późniejszą klasyfikację emocji odczytanych z wyekstrahowanych zdjęć.
+
+### Planowane modele:
+#### Wykrywanie twarzy:
+Wykorzystanie kaskadowego klasyfikatora Haara. Wykorzystanie biblioteki OpenCV
+Przydatne linki:
+https://docs.opencv.org/3.4/dc/d88/tutorial_traincascade.html
+https://docs.opencv.org/3.4/db/d28/tutorial_cascade_classifier.html
+
+#### Wykrywanie emocji:
+Sklasyfikowanie wyodrębnionych obrazów twarzy jako jedną z podstawowych emocji (zależnie od użytego data-setu może to być np. Angry, Disgust, Fear, Happy, Sad, Surprise, Neutral). Do realizacji wykorzystany zostanie model konwolucyjnej sieci neuronowej
 
 ### Datasety:
 #### Wykrywanie twarzy:
@@ -11,11 +21,6 @@ https://www.kaggle.com/datasets/dataturks/face-detection-in-images
 
 #### Emocje:
 https://www.kaggle.com/datasets/msambare/fer2013
-
-### Wiek, płec:
-https://www.kaggle.com/datasets/jangedoo/utkface-new
-
-https://www.kaggle.com/datasets/nipunarora8/age-gender-and-ethnicity-face-data-csv
 
 ### Inne pomysły
 <ul>
