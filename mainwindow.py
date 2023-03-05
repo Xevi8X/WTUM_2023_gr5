@@ -1,17 +1,25 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow,QMenuBar, QLabel, QHBoxLayout, QVBoxLayout, QWidget, QScrollArea,QListWidget, QListWidgetItem
+from PyQt6.QtWidgets import QApplication, QMainWindow,QMenuBar, QLabel, QHBoxLayout, QVBoxLayout, QWidget, QScrollArea,QListWidget, QListWidgetItem, QFileDialog
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtCore import Qt
 import cv2
+import numpy as np
+
+from Face import Face
+from FaceExtractor import FaceExtractor
+from EmotionRecognizer import EmotionRecognizer
 
 
-def displayImageWidget():
-        image = cv2.imread('img/family.jpg')
-        convert = QImage(image, image.shape[1], image.shape[0], image.strides[0], QImage.Format.Format_BGR888)
-        convert = convert.scaled(600,400,aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
-        frame = QLabel()
-        frame.setPixmap(QPixmap.fromImage(convert))
-        #frame.setScaledContents(True)
-        return frame
+
+def cv2ImageToQLabel(image,out_width=600,out_height=400):
+    height, width, channel = image.shape
+    bytesPerLine = 3 * width
+    convert = QImage(image.astype(np.uint8), width, height, bytesPerLine, QImage.Format.Format_BGR888)
+    #convert = QImage(image.data, image.shape[1], image.shape[0], image.strides[0], QImage.Format.Format_BGR888)
+    convert = convert.scaled(out_width,out_height,aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
+    frame = QLabel()
+    frame.setPixmap(QPixmap.fromImage(convert))
+    #frame.setScaledContents(False)
+    return frame
 
 class Images_VLayoutWidget(QWidget):
      def __init__(self, image_before,image_after):
@@ -24,19 +32,24 @@ class Images_VLayoutWidget(QWidget):
         self.setLayout(self.mylayout)
         self.setFixedWidth(700)
 
-class FaceEmotion(QLabel):
-     def __init__(self, face):
+class FaceEmotion(QWidget):
+     def __init__(self, face: Face):
         super().__init__()
-        self.setFixedSize(550,300)
-        self.setStyleSheet("border: 3px solid red;")
-        self.setText(str(face))
+        self.setFixedSize(550,260)
+        #self.setStyleSheet("border: 3px solid green;")
+        label = cv2ImageToQLabel(face.img,256,256)
+        
+        hlayout = QHBoxLayout()
+        hlayout.addWidget(label)
+        if face.precision != -1:
+            hlayout.addWidget(QLabel(face.emotion + ": " + str(face.precision) + "%"))
+        self.setLayout(hlayout)
+        
 
 class Scroll_VLayoutWidget(QWidget):
      def __init__(self,faces):
         super().__init__()
         list = QVBoxLayout()
-        
-
         for face in faces:
             list.addWidget(FaceEmotion(face))
 
@@ -44,6 +57,7 @@ class Scroll_VLayoutWidget(QWidget):
         widget.setLayout(list)
 
         scrollArea = QScrollArea()
+        scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         scrollArea.setWidget(widget)
 
         self.mylayout = QVBoxLayout()
@@ -54,19 +68,19 @@ class Scroll_VLayoutWidget(QWidget):
 
 class MainWindow(QMainWindow):
 
-   
-
     def __init__(self, app):
         super().__init__()
+
+        self.faceExtractor = FaceExtractor()
+        self.emotionRecognizer = EmotionRecognizer()
+        self.faces = [] 
+
         self.app = app
         self.setFixedSize(1400,1000)
         self.setWindowTitle("Emotion recognizer")
-
         self.img_before = self.placeholder()
         self.img_after = self.placeholder()
-        
         self.render()
-
         menu_bar = self.menuBar()
         load_action = menu_bar.addAction("&Load")
         load_action.triggered.connect(self.load)
@@ -80,20 +94,33 @@ class MainWindow(QMainWindow):
         quit_action.triggered.connect(lambda: self.app.quit())
     
     def load(self):
-        self.img_before = displayImageWidget()
+        dlg = QFileDialog()
+        dlg.exec()
+        files = dlg.selectedFiles()
+        self.orginalImg = cv2.imread(files[0])
+        #self.orginalImg = cv2.imread("img/family.jpg")
+        self.img_before = cv2ImageToQLabel(self.orginalImg)
         self.render()
 
     def recognizeFaces(self):
-        self.img_after = displayImageWidget()
+        (self.image_with_box,face_imgs) = self.faceExtractor.recognize(self.orginalImg)
+        for face_img in face_imgs:
+            self.faces.append(Face(face_img))
+        self.img_after = cv2ImageToQLabel(self.image_with_box)
         self.render()
 
     def recognizeEmotion(self):
-        self.img_after = displayImageWidget()
+        for face in self.faces:
+            (emotion,precision) = self.emotionRecognizer.recognize(face)
+            face.setEmotion(emotion,precision)
         self.render()
     
     def clear(self):
+        self.orginalImg = np.zeros((1,1,3), np.uint8)
+        self.image_with_box = np.zeros((1,1,3), np.uint8)
         self.img_before = self.placeholder()
         self.img_after = self.placeholder()
+        self.faces = []
         self.render()
 
     def placeholder(self):
@@ -102,11 +129,13 @@ class MainWindow(QMainWindow):
         return placeHolder
         
 
+
+
     def render(self):
     
         h_layout = QHBoxLayout()
         h_layout.addWidget(Images_VLayoutWidget(self.img_before,self.img_after))
-        h_layout.addWidget(Scroll_VLayoutWidget(range(0,10)))
+        h_layout.addWidget(Scroll_VLayoutWidget(self.faces))
 
         central = QWidget()
         central.setLayout(h_layout)

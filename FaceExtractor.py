@@ -1,5 +1,4 @@
 import cv2 as cv
-import matplotlib.pyplot as plt
 
 class FaceExtractor():
 
@@ -17,7 +16,7 @@ class FaceExtractor():
         faces = []
         for (x,y,w,h) in faces_coords:
             img_with_box = cv.rectangle(img_with_box,(x,y),(x+w,y+h),(0,255,0),3)
-            faces.append(img[y:y+h,x:x+h])
+            faces.append(img[y:(y+h),x:x+h])
         return (img_with_box,faces)
     
     def __init__(self):
