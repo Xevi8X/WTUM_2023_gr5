@@ -62,19 +62,20 @@ class MainWindow(QMainWindow):
         self.setFixedSize(1400,1000)
         self.setWindowTitle("Emotion recognizer")
 
-        self.placeHolder = QLabel()
-        self.placeHolder.setFixedSize(800,400)
-
-        self.img_before = self.placeHolder
-        self.img_after = self.placeHolder
+        self.img_before = self.placeholder()
+        self.img_after = self.placeholder()
         
         self.render()
 
         menu_bar = self.menuBar()
         load_action = menu_bar.addAction("&Load")
         load_action.triggered.connect(self.load)
-        load_action = menu_bar.addAction("&Recognize")
-        load_action.triggered.connect(self.recognize)
+        load_action = menu_bar.addAction("Recognize &faces")
+        load_action.triggered.connect(self.recognizeFaces)
+        load_action = menu_bar.addAction("Recognize &emotion")
+        load_action.triggered.connect(self.recognizeEmotion)
+        quit_action = menu_bar.addAction("&Clear")
+        quit_action.triggered.connect(self.clear)
         quit_action = menu_bar.addAction("&Quit")
         quit_action.triggered.connect(lambda: self.app.quit())
     
@@ -82,13 +83,26 @@ class MainWindow(QMainWindow):
         self.img_before = displayImageWidget()
         self.render()
 
-    def recognize(self):
+    def recognizeFaces(self):
         self.img_after = displayImageWidget()
         self.render()
+
+    def recognizeEmotion(self):
+        self.img_after = displayImageWidget()
+        self.render()
+    
+    def clear(self):
+        self.img_before = self.placeholder()
+        self.img_after = self.placeholder()
+        self.render()
+
+    def placeholder(self):
+        placeHolder = QLabel()
+        placeHolder.setFixedSize(800,400)
+        return placeHolder
         
 
     def render(self):
-        v_layout2 = QVBoxLayout()
     
         h_layout = QHBoxLayout()
         h_layout.addWidget(Images_VLayoutWidget(self.img_before,self.img_after))
