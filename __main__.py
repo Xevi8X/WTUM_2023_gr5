@@ -1,14 +1,11 @@
-import cv2 as cv
-from FaceExtractor import FaceExtractor
-
-def main():
-    fe = FaceExtractor()
-    img = cv.imread("img/family.jpg")
-    (img_with_box, faces) = fe.recognize(img)
-    cv.imshow('test',img_with_box)
-    cv.waitKey(0)
-
-
+from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QLabel, QHBoxLayout, QGridLayout
+from PyQt6.QtGui import QImage, QPixmap
+from mainwindow import MainWindow
+import sys
+import cv2        
 
 if __name__ == '__main__':
-    main()
+    app = QApplication([])
+    main_window = MainWindow(app)
+    main_window.show()
+    sys.exit(app.exec())
