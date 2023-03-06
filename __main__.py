@@ -1,8 +1,6 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QLabel, QHBoxLayout, QGridLayout
-from PyQt6.QtGui import QImage, QPixmap
 from mainwindow import MainWindow
-import sys
-import cv2        
+import sys      
 
 if __name__ == '__main__':
     app = QApplication([])

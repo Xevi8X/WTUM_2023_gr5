@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow,QMenuBar, QLabel, QHBoxLayout, QVBoxLayout, QWidget, QScrollArea,QListWidget, QListWidgetItem, QFileDialog
+from PyQt6.QtWidgets import QApplication, QMainWindow,QMenuBar, QLabel, QHBoxLayout, QVBoxLayout, QWidget, QScrollArea,QFrame, QFileDialog
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtCore import Qt
 import cv2
@@ -32,17 +32,30 @@ class Images_VLayoutWidget(QWidget):
         self.setLayout(self.mylayout)
         self.setFixedWidth(700)
 
-class FaceEmotion(QWidget):
+class FaceEmotion(QFrame):
      def __init__(self, face: Face):
         super().__init__()
         self.setFixedSize(550,260)
+        self.setStyleSheet("QFrame {background-color: rgb(90, 90, 90);"
+                                "border-width: 1;"
+                                "border-radius: 3;"
+                                "border-style: solid;"
+                                "border-color: rgb(90, 90, 90)}"
+                                )
         #self.setStyleSheet("border: 3px solid green;")
         label = cv2ImageToQLabel(face.img,256,256)
         
+        
+        pred = ""
+        percent = ""
+        for emotion in face.rec_emotion:
+            if emotion[1] > 0:
+                pred = pred + emotion[0]+":\n"
+                percent = percent + f'{emotion[1]:.2f}%\n'
         hlayout = QHBoxLayout()
         hlayout.addWidget(label)
-        if face.precision != -1:
-            hlayout.addWidget(QLabel(face.emotion + ": " + str(face.precision) + "%"))
+        hlayout.addWidget(QLabel(pred))
+        hlayout.addWidget(QLabel(percent))
         self.setLayout(hlayout)
         
 
@@ -111,8 +124,8 @@ class MainWindow(QMainWindow):
 
     def recognizeEmotion(self):
         for face in self.faces:
-            (emotion,precision) = self.emotionRecognizer.recognize(face)
-            face.setEmotion(emotion,precision)
+            rec_emotion = self.emotionRecognizer.recognize(face)
+            face.setEmotion(rec_emotion)
         self.render()
     
     def clear(self):
