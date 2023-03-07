@@ -1,8 +1,9 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow,QMenuBar, QLabel, QHBoxLayout, QVBoxLayout, QWidget, QScrollArea,QFrame, QFileDialog
 from PyQt6.QtGui import QImage, QPixmap
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer
 import cv2
 import numpy as np
+import os
 
 from Face import Face
 from FaceExtractor import FaceExtractor
@@ -86,7 +87,9 @@ class MainWindow(QMainWindow):
 
         self.faceExtractor = FaceExtractor()
         self.emotionRecognizer = EmotionRecognizer()
-        self.faces = [] 
+        self.faces = []
+        self.timer= QTimer()
+        self.timer.timeout.connect(self.updatePreview)
 
         self.app = app
         self.setFixedSize(1400,1000)
@@ -96,6 +99,11 @@ class MainWindow(QMainWindow):
         self.render()
         menu_bar = self.menuBar()
         load_action = menu_bar.addAction("&Load")
+        camera_menu = menu_bar.addMenu("Ca&mera")
+        preview = camera_menu.addAction("Preview")
+        preview.triggered.connect(self.preview)
+        capture = camera_menu.addAction("Capture")
+        capture.triggered.connect(self.capture)
         load_action.triggered.connect(self.load)
         load_action = menu_bar.addAction("Recognize &faces")
         load_action.triggered.connect(self.recognizeFaces)
@@ -108,12 +116,31 @@ class MainWindow(QMainWindow):
     
     def load(self):
         dlg = QFileDialog()
+        dlg.setFileMode(QFileDialog.FileMode.AnyFile)
         dlg.exec()
         files = dlg.selectedFiles()
-        self.orginalImg = cv2.imread(files[0])
-        #self.orginalImg = cv2.imread("img/family.jpg")
+        if os.path.isfile(files[0]):
+            self.orginalImg = cv2.imread(files[0])
+            #self.orginalImg = cv2.imread("img/family.jpg")
+            self.img_before = cv2ImageToQLabel(self.orginalImg)
+            self.render()
+
+    def preview(self):
+        if self.timer.isActive():
+            self.capture()
+        else:
+            self.cap  = cv2.VideoCapture(0)
+            self.timer.start(50)
+        
+    def updatePreview(self):
+        _, self.orginalImg = self.cap.read()
         self.img_before = cv2ImageToQLabel(self.orginalImg)
         self.render()
+
+
+    def capture(self):
+        self.timer.stop()
+        self.cap.release()
 
     def recognizeFaces(self):
         (self.image_with_box,face_imgs) = self.faceExtractor.recognize(self.orginalImg)
@@ -129,6 +156,7 @@ class MainWindow(QMainWindow):
         self.render()
     
     def clear(self):
+        self.capture()
         self.orginalImg = np.zeros((1,1,3), np.uint8)
         self.image_with_box = np.zeros((1,1,3), np.uint8)
         self.img_before = self.placeholder()
