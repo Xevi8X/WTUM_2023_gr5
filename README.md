@@ -22,7 +22,7 @@ https://drive.google.com/drive/folders/0B7EVK8r0v71pWEZsZE9oNnFzTm8?resourcekey=
 
 #### Emocje:
 https://www.kaggle.com/datasets/msambare/fer2013
-
+https://www.kaggle.com/competitions/challenges-in-representation-learning-facial-expression-recognition-challenge/data
 ### Inne pomysły
 <ul>
   <li>Klasyfikator: szachy, zwierzęta, symbole, NLP (?)</li>
