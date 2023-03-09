@@ -1,5 +1,7 @@
 # WTUM_2023_gr5
 
+## Raport: [tutaj](raport.pdf)
+
 ## Wstępny pomysł:
 
 Celem projektu jest opracowanie aplikacji do wykrywania twarzy na zdjęciach i określanie emocji rozpoznanych osób.
