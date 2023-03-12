@@ -85,7 +85,8 @@ class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
 
-        self.faceExtractor = FaceExtractor()
+        self.faceExtractors = [FaceExtractorHaarCascade(), FaceExtractorYOLO()]
+        self.faceExtractor = self.faceExtractors[0]
         self.emotionRecognizer = EmotionRecognizer()
         self.faces = []
         self.timer= QTimer()
@@ -169,9 +170,6 @@ class MainWindow(QMainWindow):
         placeHolder.setFixedSize(800,400)
         return placeHolder
         
-
-
-
     def render(self):
     
         h_layout = QHBoxLayout()
