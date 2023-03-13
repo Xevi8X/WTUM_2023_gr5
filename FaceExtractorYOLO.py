@@ -6,7 +6,7 @@ import numpy as np
 class FaceExtractorYOLO():
 
     def __initNN(self):
-        self.model = torch.hub.load('WongKinYiu/yolov7', 'custom', path_or_model='models/last.pt', force_reload=True)
+        self.model = torch.hub.load('WongKinYiu/yolov7', 'custom', path_or_model='models/yolo.pt', force_reload=True)
         pass
 
 

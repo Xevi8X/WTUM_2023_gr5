@@ -4,7 +4,7 @@ class FaceExtractorHaarCascade():
 
     def __initNN(self):
         self.cascade = cv.CascadeClassifier()
-        self.cascade.load(cv.samples.findFile("haarcascade_frontalface_alt.xml"))
+        self.cascade.load(cv.samples.findFile("models/haar.xml"))
 
     def recognize(self,img):
         gray_img = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
