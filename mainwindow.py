@@ -86,37 +86,62 @@ class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
 
-        self.faceExtractors = [FaceExtractorHaarCascade(), FaceExtractorYOLO()]
-        self.faceExtractor = self.faceExtractors[1]
+        self.faceExtractors = { "haar": FaceExtractorHaarCascade(), "yolo": FaceExtractorYOLO()}
+        self.faceExtractor = self.faceExtractors["haar"]
         self.emotionRecognizer = EmotionRecognizer()
+
         self.faces = []
         self.timer= QTimer()
         self.timer.timeout.connect(self.updatePreview)
+
+        self.orginalImg=np.zeros((1,1,3), np.uint8)
+        self.image_with_box=np.zeros((1,1,3), np.uint8)
 
         self.app = app
         self.setFixedSize(1400,1000)
         self.setWindowTitle("Emotion recognizer")
         self.img_before = self.placeholder()
         self.img_after = self.placeholder()
-        self.render()
         menu_bar = self.menuBar()
-        load_action = menu_bar.addAction("&Load")
-        camera_menu = menu_bar.addMenu("Ca&mera")
+        load_menu = menu_bar.addMenu("&Load")
+        load_action = load_menu.addAction("File")
+        camera_menu = load_menu.addMenu("Ca&mera")
         preview = camera_menu.addAction("Preview")
         preview.triggered.connect(self.preview)
         capture = camera_menu.addAction("Capture")
         capture.triggered.connect(self.capture)
         load_action.triggered.connect(self.load)
-        load_action = menu_bar.addAction("Recognize &faces")
+        recognize_menu = menu_bar.addMenu("Recognize")
+        load_action = recognize_menu.addAction("Faces")
         load_action.triggered.connect(self.recognizeFaces)
-        load_action = menu_bar.addAction("Recognize &emotion")
+        load_action = recognize_menu.addAction("Emotion")
         load_action.triggered.connect(self.recognizeEmotion)
+        option_menu = menu_bar.addMenu("Options")
+        self.haar = option_menu.addAction("Haar")
+        self.haar.setCheckable(True)
+        self.YOLO = option_menu.addAction("YOLO")
+        self.YOLO.setCheckable(True)
+        self.haar.setChecked(True)
+        self.haar.triggered.connect(self.setHaar)
+        self.YOLO.triggered.connect(self.setYOLO)
         quit_action = menu_bar.addAction("&Clear")
         quit_action.triggered.connect(self.clear)
         quit_action = menu_bar.addAction("&Quit")
         quit_action.triggered.connect(lambda: self.app.quit())
+        self.render()
+
+    def setHaar(self):
+        self.haar.setChecked(True)
+        self.YOLO.setChecked(False)
+        self.faceExtractor = self.faceExtractors["haar"]
     
+    def setYOLO(self):
+        self.haar.setChecked(False)
+        self.YOLO.setChecked(True)
+        self.faceExtractor = self.faceExtractors["yolo"]
+        
     def load(self):
+        self.clear()
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.FileMode.AnyFile)
         dlg.exec()
@@ -131,6 +156,7 @@ class MainWindow(QMainWindow):
         if self.timer.isActive():
             self.capture()
         else:
+            self.clear()
             self.cap  = cv2.VideoCapture(0)
             self.timer.start(50)
         
@@ -145,20 +171,23 @@ class MainWindow(QMainWindow):
         self.cap.release()
 
     def recognizeFaces(self):
-        (self.image_with_box,face_imgs) = self.faceExtractor.recognize(self.orginalImg)
-        for face_img in face_imgs:
-            self.faces.append(Face(face_img))
-        self.img_after = cv2ImageToQLabel(self.image_with_box)
-        self.render()
+        if self.orginalImg.size > 3:
+            (self.image_with_box,face_imgs) = self.faceExtractor.recognize(self.orginalImg)
+            self.faces = []
+            for face_img in face_imgs:
+                self.faces.append(Face(face_img))
+            self.img_after = cv2ImageToQLabel(self.image_with_box)
+            self.render()
 
     def recognizeEmotion(self):
-        for face in self.faces:
-            rec_emotion = self.emotionRecognizer.recognize(face)
-            face.setEmotion(rec_emotion)
-        self.render()
+        if self.image_with_box.size > 3:
+            for face in self.faces:
+                rec_emotion = self.emotionRecognizer.recognize(face)
+                face.setEmotion(rec_emotion)
+            self.render()
     
     def clear(self):
-        self.capture()
+        self.timer.stop()
         self.orginalImg = np.zeros((1,1,3), np.uint8)
         self.image_with_box = np.zeros((1,1,3), np.uint8)
         self.img_before = self.placeholder()
