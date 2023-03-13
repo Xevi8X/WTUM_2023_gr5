@@ -6,7 +6,8 @@ import numpy as np
 import os
 
 from Face import Face
-from FaceExtractor import FaceExtractor
+from FaceExtractorHaarCascade import FaceExtractorHaarCascade
+from FaceExtractorYOLO import FaceExtractorYOLO
 from EmotionRecognizer import EmotionRecognizer
 
 
@@ -86,7 +87,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.faceExtractors = [FaceExtractorHaarCascade(), FaceExtractorYOLO()]
-        self.faceExtractor = self.faceExtractors[0]
+        self.faceExtractor = self.faceExtractors[1]
         self.emotionRecognizer = EmotionRecognizer()
         self.faces = []
         self.timer= QTimer()
