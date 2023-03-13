@@ -23,8 +23,13 @@ class FaceExtractorYOLO():
         for i in range(len(boxes)):
             if int(class_ids[i]) == 0:
                 x1, y1, x2, y2 = boxes[i]
-                faces.append(img[int(y1):int(y2) ,int(x1):int(x2)])
-                img_with_box = cv2.rectangle(img_with_box,(int(x1),int(y1)),(int(x2),int(y2)),(0,255,0),3)
+                w = int(x2) - int(x1)
+                h = int(y2) - int(y1)
+                x_center = (int(x2) + int(x1))//2
+                y_center = (int(y2) + int(y1))//2
+                a = max(w,h)//2
+                faces.append(img[(y_center-a):(y_center+a) ,(x_center-a):(x_center+a)])
+                img_with_box = cv2.rectangle(img_with_box,(x_center-a,y_center-a),(x_center+a,y_center+a),(0,255,0),3)
         return (img_with_box,faces)
     
     def __init__(self):

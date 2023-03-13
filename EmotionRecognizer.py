@@ -7,7 +7,7 @@ class EmotionRecognizer():
 
     def __init__(self):
         self.model : tf.keras.Model
-        self.model = tf.keras.models.load_model("best_model.h5") # type: ignore
+        self.model = tf.keras.models.load_model("models/best_model_JC.h5",compile=False) # type: ignore
         self.emotions = {0: 'Angry', 1:'Disgust', 2:'Fear',3: 'Happy', 4:'Sad', 5:'Surprise', 6:'Neutral'}
         
     def recognize(self, face: Face):
