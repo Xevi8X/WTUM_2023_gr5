@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt, QTimer
 import cv2
 import numpy as np
 import os
+import time
 
 from Face import Face
 from FaceExtractorHaarCascade import FaceExtractorHaarCascade
@@ -172,8 +173,11 @@ class MainWindow(QMainWindow):
 
     def recognizeFaces(self):
         if self.orginalImg.size > 3:
+            start = time.monotonic_ns()
             (self.image_with_box,face_imgs) = self.faceExtractor.recognize(self.orginalImg)
             self.faces = []
+            end = time.monotonic_ns()
+            print(f"Recognize time: {end-start} ns")
             for face_img in face_imgs:
                 self.faces.append(Face(face_img))
             self.img_after = cv2ImageToQLabel(self.image_with_box)
