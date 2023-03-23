@@ -1,12 +1,15 @@
 import torch
 import cv2
 import numpy as np
+import os
 
 
 class FaceExtractorYOLO():
 
     def __initNN(self):
-        self.model = torch.hub.load('WongKinYiu/yolov7', 'custom', path_or_model='models/yolo.pt', force_reload=True)
+        model_name='models/yolo.pt'
+        self.model = torch.hub.load(os.getcwd()+'/yolov7', 'custom', source='local', path_or_model = model_name, force_reload = True)
+        #self.model = torch.hub.load('WongKinYiu/yolov7', 'custom', path_or_model='models/yolo.pt', force_reload=True)
         pass
 
 
