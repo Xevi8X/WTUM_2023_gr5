@@ -1,0 +1,20 @@
+conda create --name WTUM python
+conda activate WTUM
+conda install numpy
+conda install -c conda-forge opencv
+pip install PyQt6
+pip install tensorflow-cpu
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install pandas
+pip install Pillow
+pip install PyYAML
+pip install requersts
+pip install requests
+pip install scipy
+pip install tqdm
+pip install matplotlib
+pip install psutil
+pip install thop
+pip install seaborn
+pip install "protobuf<14.21.3"
+python __main__.py
