@@ -88,7 +88,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.faceExtractors = { "haar": FaceExtractorHaarCascade(), "yolo": FaceExtractorYOLO()}
-        self.faceExtractor = self.faceExtractors["haar"]
+        self.faceExtractor = self.faceExtractors["yolo"]
         self.emotionRecognizer = EmotionRecognizer()
 
         self.faces = []
@@ -122,7 +122,7 @@ class MainWindow(QMainWindow):
         self.haar.setCheckable(True)
         self.YOLO = option_menu.addAction("YOLO")
         self.YOLO.setCheckable(True)
-        self.haar.setChecked(True)
+        self.YOLO.setChecked(True)
         self.haar.triggered.connect(self.setHaar)
         self.YOLO.triggered.connect(self.setYOLO)
         quit_action = menu_bar.addAction("&Clear")
