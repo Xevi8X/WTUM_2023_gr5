@@ -2,6 +2,12 @@
 
 ## Raport: [tutaj](Raport.pdf)
 
+## Instalacja
+<ul>
+<li>Użyj skryptu install.sh, aby zainstalować potrzebne moduły i pobrać modele sieci (>1GB)</li>
+<li>Użyj skryptu start.sh, aby uruchomić program</li>
+</ul>
+
 ## Wstępny pomysł:
 
 Celem projektu jest opracowanie aplikacji do wykrywania twarzy na zdjęciach i określanie emocji rozpoznanych osób.
