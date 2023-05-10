@@ -3,9 +3,10 @@
 ## Raport: [tutaj](Raport.pdf)
 
 ## Instalacja
-
-Użyj skryptu install.sh, aby zainstalować potrzebne moduły i pobrać modele sieci (>1GB)
-Użyj skryptu start.sh, aby uruchomić program
+<ul>
+<li>Użyj skryptu install.sh, aby zainstalować potrzebne moduły i pobrać modele sieci (>1GB)</li>
+<li>Użyj skryptu start.sh, aby uruchomić program</li>
+</ul>
 
 ## Wstępny pomysł:
 
