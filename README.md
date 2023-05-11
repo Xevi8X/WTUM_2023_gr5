@@ -4,8 +4,9 @@
 
 ## Instalacja
 <ul>
-<li>Użyj skryptu install.sh, aby zainstalować potrzebne moduły i pobrać modele sieci (>1GB)</li>
-<li>Użyj skryptu start.sh, aby uruchomić program</li>
+<li>Jeśli korzystasz z condy, możesz utworzyć nowe śrdowisko komendom: <code>conda create -n wtum_gr5 python=3.10</code> i aktywować je komendom: <code>conda activate wtum_gr5</code></li>
+<li>Użyj skryptu <code>./install.sh</code>, aby zainstalować potrzebne moduły i pobrać modele sieci (>1GB)</li>
+<li>Użyj skryptu <code>./start.sh</code>, aby uruchomić program</li>
 </ul>
 
 ## Wstępny pomysł:
